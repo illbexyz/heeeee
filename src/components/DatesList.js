@@ -3,25 +3,26 @@
 import React, { Component } from 'react'
 import { Menu } from 'semantic-ui-react'
 
-import { type Lesson } from '../config/firebase'
-
-import { prettyDate } from '../utils'
-
 type DatesListProps = {
-    lessons: Lesson[],
-    onLessonChange: (lesson: Lesson) => any
+    activeId: string,
+    lessonsIds: string[],
+    onLessonChange: (lessonId: string) => any
 }
 
 class Dates extends Component<DatesListProps> {
     render() {
-        const { lessons, onLessonChange } = this.props
+        const { activeId, lessonsIds, onLessonChange } = this.props
         return (
             <Menu vertical>
-                {lessons.map(lesson => (
+                <Menu.Item header>
+                    Lezioni
+                </Menu.Item>
+                {lessonsIds.map(lessonId => (
                     <Menu.Item
-                        name={prettyDate(lesson.date)}
-                        key={lesson.date.getTime()}
-                        onClick={() => onLessonChange(lesson)}
+                        name={lessonId}
+                        key={lessonId}
+                        onClick={() => onLessonChange(lessonId)}
+                        active={activeId === lessonId}
                     />
                 ))}
             </Menu>

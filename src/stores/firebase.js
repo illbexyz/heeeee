@@ -9,14 +9,14 @@ import { dateToLessonId } from '../utils'
 export type UpdateType = 'haaaaa' | 'heeeee' | 'hmmmmm' | 'okay'
 
 export class FirebaseStore {
-    lessons: Lesson[]
+    lessonsIds: string[]
     currentLesson: Lesson
 
     unsubscribe: () => any = () => {}
 
     constructor() {
         extendObservable(this, {
-            lessons: [],
+            lessonsIds: [],
             currentLesson: null
         })
     }
@@ -26,21 +26,20 @@ export class FirebaseStore {
             .collection('lessons')
             .get()
             .then(querySnapshot => {
-                const l: Lesson[] = []
-                querySnapshot.forEach(doc => l.push(doc.data()))
-                this.lessons = l
+                const ids = []
+                querySnapshot.forEach(doc => ids.push(doc.id))
+                this.lessonsIds = ids
             })
             .catch(error => {
                 console.log(error)
             })
     })
 
-    selectLesson = action((lesson: Lesson) => {
-        this.currentLesson = lesson
+    selectLesson = action((lessonId: string) => {
         this.unsubscribe()
         this.unsubscribe = database
             .collection('lessons')
-            .doc(dateToLessonId(lesson.date))
+            .doc(lessonId)
             .onSnapshot(this.lessonChanged)
     })
 

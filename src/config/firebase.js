@@ -22,7 +22,6 @@ export type Lesson = {
     okay: number
 }
 
-firebase.firestore().enablePersistence()
 const db = firebase.firestore()
 
 export default db

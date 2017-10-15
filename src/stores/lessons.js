@@ -6,8 +6,6 @@ import type { Lesson } from "../config/firebase"
 
 import firebaseStore from "../stores/firebase"
 
-import { dateToLessonId } from "../utils"
-
 export type LessonUpdateType = "haaaaa" | "heeeee" | "hmmmmm" | "okay"
 
 export class LessonsStore {
@@ -60,10 +58,6 @@ export class LessonsStore {
     onLessonUpdate = action("onLessonUpdate", doc => {
         this.currentLesson = doc.data()
     })
-
-    getLessonById = action("getLessonById", (id: string) =>
-        this.lessons.find(lesson => dateToLessonId(lesson.date) === id)
-    )
 }
 
 export default new LessonsStore()

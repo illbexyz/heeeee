@@ -22,7 +22,7 @@ const theme = createMuiTheme({
 })
 
 ReactDOM.render(
-    <Router>
+    <Router basename="/heeeee">
         <MuiThemeProvider theme={theme}>
             <Provider firebaseStore={firebaseStore} lessonsStore={lessonsStore}>
                 <App />

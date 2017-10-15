@@ -4,8 +4,8 @@ node_js:
 cache:
   directories:
   - node_modules
-script:
-  - npm run deploy
+before_deploy:
+  - npm run build
 deploy:
   provider: pages
   skip_cleanup: true

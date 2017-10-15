@@ -6,6 +6,7 @@
   "dependencies": {
     "firebase": "4.5.0",
     "flow-bin": "^0.57.2",
+    "lodash": "^4.17.4",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-beta.15",
     "mobx": "^3.3.1",
@@ -14,6 +15,7 @@
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
+    "recharts": "^1.0.0-alpha.6",
     "styled-components": "^2.2.1"
   },
   "scripts": {

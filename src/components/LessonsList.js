@@ -1,7 +1,12 @@
 // @flow
 
 import React, { Component } from "react"
+import times from "lodash/times"
+import zip from "lodash/zip"
+
+import Divider from "material-ui/Divider"
 import List, { ListItem, ListItemText } from "material-ui/List"
+
 import { observer, inject } from "mobx-react"
 import { Link } from "react-router-dom"
 
@@ -19,21 +24,26 @@ export class LessonsList extends Component<LessonsListProps> {
         const { lessons, onLessonChange } = this.props
         return (
             <List>
-                {lessons.reverse().map(lesson => (
-                    <Link
-                        to={`/lessons/${dateToLessonId(lesson.date)}`}
-                        key={dateToLessonId(lesson.date)}
-                        style={{ textDecoration: "none" }}
-                    >
-                        <ListItem
-                            button
-                            onClick={() =>
-                                onLessonChange(dateToLessonId(lesson.date))}
+                {zip(
+                    lessons.reverse().map(lesson => (
+                        <Link
+                            to={`/lessons/${dateToLessonId(lesson.date)}`}
+                            key={dateToLessonId(lesson.date)}
+                            style={{ textDecoration: "none" }}
                         >
-                            <ListItemText primary={prettyDate(lesson.date)} />
-                        </ListItem>
-                    </Link>
-                ))}
+                            <ListItem
+                                button
+                                onClick={() =>
+                                    onLessonChange(dateToLessonId(lesson.date))}
+                            >
+                                <ListItemText
+                                    primary={prettyDate(lesson.date)}
+                                />
+                            </ListItem>
+                        </Link>
+                    )),
+                    times(lessons.length - 1, i => <Divider key={i} light />)
+                )}
             </List>
         )
     }

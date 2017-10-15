@@ -21,7 +21,7 @@ const Container = styled.div`
 const SelectLesson = ({ isFetchingLessons }) => (
     <Container>
         <div>
-            <Typography type="display2" paragraph>
+            <Typography type="display2" align="center" paragraph>
                 Seleziona una lezione
             </Typography>
             {onlyIf(

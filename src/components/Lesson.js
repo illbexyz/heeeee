@@ -2,7 +2,14 @@
 
 import React, { Component } from "react"
 import styled from "styled-components"
-import { BarChart, XAxis, YAxis, Tooltip, Bar } from "recharts"
+import {
+    BarChart,
+    XAxis,
+    YAxis,
+    Tooltip,
+    Bar,
+    ResponsiveContainer
+} from "recharts"
 import compact from "lodash/compact"
 
 import Fade from "material-ui/transitions/Fade"
@@ -84,12 +91,14 @@ class LessonUI extends Component<LessonProps> {
                             >
                                 Grafici
                             </Typography>
-                            <BarChart width={500} height={300} data={data}>
-                                <XAxis dataKey="name" />
-                                <YAxis dataKey="value" />
-                                <Tooltip />
-                                <Bar dataKey="value" fill={primary[500]} />
-                            </BarChart>
+                            <ResponsiveContainer width="90%" height={300}>
+                                <BarChart data={data}>
+                                    <XAxis dataKey="name" />
+                                    <YAxis dataKey="value" />
+                                    <Tooltip />
+                                    <Bar dataKey="value" fill={primary[500]} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </Wrapper>
                 </Fade>

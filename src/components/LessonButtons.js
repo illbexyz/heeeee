@@ -18,7 +18,7 @@ type LessonProps = {
 }
 
 const LessonCard = ({ text, value, onIncrement, onDecrement }) => (
-    <Card>
+    <Card style={{ margin: "0px 4px" }}>
         <CardContent>
             <Typography type="body1">{text}</Typography>
             <Typography type="headline" component="h2">
@@ -63,7 +63,7 @@ const LessonButtons = observer(
         render() {
             const { lesson, onIncrement, onDecrement } = this.props
             return (
-                <Grid container>
+                <Grid container justify={"center"} spacing={0}>
                     <Grid item>
                         <LessonCard
                             text="Haaaaa"

@@ -41,7 +41,7 @@ class AppHeader extends Component<HeaderProps> {
                             <Button color="contrast">Lezioni</Button>
                         </Link>
                         <Link to="/stats" style={{ textDecoration: "none" }}>
-                            <Button color="contrast">Statistiche</Button>
+                            <Button color="contrast">Stats</Button>
                         </Link>
                     </Toolbar>
                 </AppBar>

@@ -19,7 +19,11 @@ const PageLessons = withRouter(
             class App extends Component<AppProps> {
                 render() {
                     const { lessonsStore } = this.props
-
+                    const {
+                        currentLesson,
+                        incrementSelected,
+                        decrementSelected
+                    } = lessonsStore
                     return (
                         <Switch>
                             <Route
@@ -29,15 +33,9 @@ const PageLessons = withRouter(
 
                                     return (
                                         <LessonUI
-                                            lesson={lessonsStore.getLessonById(
-                                                match.params.id
-                                            )}
-                                            onIncrement={
-                                                lessonsStore.incrementSelected
-                                            }
-                                            onDecrement={
-                                                lessonsStore.decrementSelected
-                                            }
+                                            lesson={currentLesson}
+                                            onIncrement={incrementSelected}
+                                            onDecrement={decrementSelected}
                                             match={match}
                                         />
                                     )

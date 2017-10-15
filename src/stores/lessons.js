@@ -3,23 +3,21 @@
 import { action, extendObservable } from "mobx"
 
 import type { Lesson } from "../config/firebase"
-
 import firebaseStore from "../stores/firebase"
+import { dateToLessonId } from "../utils"
 
 export type LessonUpdateType = "haaaaa" | "heeeee" | "hmmmmm" | "okay"
 
 export class LessonsStore {
     lessons: Lesson[]
     currentLesson: Lesson
-    currentLessonId: string
 
     unsubscribe: () => any = () => {}
 
     constructor() {
         extendObservable(this, {
             lessons: [],
-            currentLesson: null,
-            currentLessonId: ""
+            currentLesson: null
         })
         firebaseStore.fetchLessons(lessons => {
             this.lessons = lessons
@@ -27,11 +25,16 @@ export class LessonsStore {
     }
 
     selectLesson = action("selectLesson", (lessonId: string) => {
-        this.unsubscribe()
-        this.unsubscribe = firebaseStore.subscribeForLesson(
-            lessonId,
-            this.onLessonUpdate
-        )
+        if (
+            !this.currentLesson ||
+            dateToLessonId(this.currentLesson.date) !== lessonId
+        ) {
+            this.unsubscribe()
+            this.unsubscribe = firebaseStore.subscribeForLesson(
+                lessonId,
+                this.onLessonUpdate
+            )
+        }
     })
 
     updateLesson = action(

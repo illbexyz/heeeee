@@ -1,70 +1,60 @@
 // @flow
 
-import { action, extendObservable } from 'mobx'
+import { action, extendObservable } from "mobx"
 
-import database, { type Lesson } from '../config/firebase'
+import type { Lesson } from "../config/firebase"
+import database from "../config/firebase"
 
-import { dateToLessonId } from '../utils'
-
-export type UpdateType = 'haaaaa' | 'heeeee' | 'hmmmmm' | 'okay'
+import { dateToLessonId } from "../utils"
 
 export class FirebaseStore {
-    lessonsIds: string[]
-    currentLesson: Lesson
-
-    unsubscribe: () => any = () => {}
+    isFetchingLessons: boolean
 
     constructor() {
         extendObservable(this, {
-            lessonsIds: [],
-            currentLesson: null
+            isFetchingLessons: false
         })
     }
 
-    fetchLessons = action(() => {
-        database
-            .collection('lessons')
+    fetchLessons = action("fetchLessons", (onSuccess, onFail) => {
+        this.isFetchingLessons = true
+        return database
+            .collection("lessons")
             .get()
-            .then(querySnapshot => {
-                const ids = []
-                querySnapshot.forEach(doc => ids.push(doc.id))
-                this.lessonsIds = ids
-            })
-            .catch(error => {
-                console.log(error)
-            })
+            .then(doc => this.fetchLessonsSuccess(doc, onSuccess))
+            .catch(error => this.fetchLessonsFail(error, onFail))
     })
 
-    selectLesson = action((lessonId: string) => {
-        this.unsubscribe()
-        this.unsubscribe = database
-            .collection('lessons')
-            .doc(lessonId)
-            .onSnapshot(this.lessonChanged)
+    fetchLessonsSuccess = action(
+        "fetchLessonsSuccess",
+        (querySnapshot, onSuccess) => {
+            this.isFetchingLessons = false
+            const lessons: Lesson[] = []
+            querySnapshot.forEach(doc => lessons.push(doc.data()))
+            onSuccess(lessons)
+        }
+    )
+
+    fetchLessonsFail = action("fetchLessonsFail", (error, onFail) => {
+        this.isFetchingLessons = false
+        console.log(error)
     })
 
-    changeLesson = (type: UpdateType, action: 'increment' | 'decrement') => {
+    subscribeForLesson = action(
+        "selectLesson",
+        (lessonId: string, subscriber: (doc: any) => any) => {
+            return database
+                .collection("lessons")
+                .doc(lessonId)
+                .onSnapshot(subscriber)
+        }
+    )
+
+    updateLesson = action("updateLesson", (lesson: Lesson) => {
         database
-            .collection('lessons')
-            .doc(dateToLessonId(this.currentLesson.date))
-            .update({
-                [type]:
-                    action === 'increment'
-                        ? this.currentLesson[type] + 1
-                        : this.currentLesson[type] - 1
-            })
-    }
-
-    increment = action((type: UpdateType) => {
-        this.changeLesson(type, 'increment')
-    })
-
-    decrement = action((type: UpdateType) => {
-        this.changeLesson(type, 'decrement')
-    })
-
-    lessonChanged = action(doc => {
-        this.currentLesson = doc.data()
+            .collection("lessons")
+            .doc(dateToLessonId(lesson.date))
+            .update(lesson)
     })
 }
 

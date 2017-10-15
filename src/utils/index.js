@@ -1,18 +1,18 @@
 // @flow
 
 const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    "Gennaio",
+    "Febbraio",
+    "Marzo",
+    "Aprile",
+    "Maggio",
+    "Giugno",
+    "Luglio",
+    "Agosto",
+    "Settembre",
+    "Ottobre",
+    "Novembre",
+    "Dicembre"
 ]
 
 export const dateToLessonId = (date: Date) => {
@@ -28,5 +28,9 @@ export const prettyDate = (date: Date) => {
     var monthIndex = date.getMonth()
     var year = date.getFullYear()
 
-    return `${day}-${monthNames[monthIndex]}-${year}`
+    return `${day} ${monthNames[monthIndex]} ${year}`
+}
+
+export function onlyIf<T>(condition: boolean, component: T, placeholer?: T) {
+    return condition ? component : placeholer || null
 }

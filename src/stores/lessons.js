@@ -12,8 +12,6 @@ export class LessonsStore {
     lessons: Lesson[]
     currentLesson: Lesson
 
-    unsubscribe: () => any = () => {}
-
     constructor() {
         extendObservable(this, {
             lessons: [],
@@ -29,11 +27,7 @@ export class LessonsStore {
             !this.currentLesson ||
             dateToLessonId(this.currentLesson.date) !== lessonId
         ) {
-            this.unsubscribe()
-            this.unsubscribe = firebaseStore.subscribeForLesson(
-                lessonId,
-                this.onLessonUpdate
-            )
+            firebaseStore.subscribeForLesson(lessonId, this.onLessonUpdate)
         }
     })
 
@@ -50,16 +44,34 @@ export class LessonsStore {
         }
     )
 
+    addDataToLesson = action("addDataToLesson", (type: LessonUpdateType) => {
+        const item = {
+            type,
+            timestamp: new Date()
+        }
+        firebaseStore.addToCollection(
+            `lessons/${dateToLessonId(this.currentLesson.date)}/counters`,
+            item
+        )
+    })
+
+    removeDataToLesson = action(
+        "removeDataToLesson",
+        (type: LessonUpdateType) => {
+            // TODO
+        }
+    )
+
     incrementSelected = action("increment", (type: LessonUpdateType) => {
-        this.updateLesson(type, "increment")
+        this.addDataToLesson(type)
     })
 
     decrementSelected = action("decrement", (type: LessonUpdateType) => {
         this.updateLesson(type, "decrement")
     })
 
-    onLessonUpdate = action("onLessonUpdate", doc => {
-        this.currentLesson = doc.data()
+    onLessonUpdate = action("onLessonUpdate", lesson => {
+        this.currentLesson = lesson
     })
 }
 

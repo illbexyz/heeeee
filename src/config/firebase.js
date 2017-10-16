@@ -14,12 +14,18 @@ const config = {
 
 firebase.initializeApp(config)
 
+export type LessonData = {
+    type: string,
+    timestamp: Date
+}
+
 export type Lesson = {
     date: Date,
-    haaaaa: number,
-    heeeee: number,
-    hmmmmm: number,
-    okay: number
+    counters: LessonData[],
+    haaaaa?: number,
+    heeeee?: number,
+    hmmmmm?: number,
+    okay?: number
 }
 
 const db = firebase.firestore()

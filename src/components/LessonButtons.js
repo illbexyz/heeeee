@@ -11,13 +11,15 @@ import Grid from "material-ui/Grid"
 import { type UpdateType } from "../stores/firebase"
 import { type Lesson } from "../config/firebase"
 
+import { countType } from "../utils"
+
 type LessonProps = {
     lesson: Lesson,
     onIncrement: (type: UpdateType) => any,
     onDecrement: (type: UpdateType) => any
 }
 
-const LessonCard = ({ text, value, onIncrement, onDecrement }) => (
+const LessonCard = ({ canClick, text, value, onIncrement, onDecrement }) => (
     <Card style={{ margin: "0px 4px" }}>
         <CardContent>
             <Typography type="body1">{text}</Typography>
@@ -26,10 +28,16 @@ const LessonCard = ({ text, value, onIncrement, onDecrement }) => (
             </Typography>
         </CardContent>
         <CardActions>
-            <Button raised dense onClick={onDecrement}>
+            <Button raised dense onClick={onDecrement} disabled>
                 -
             </Button>
-            <Button color={"primary"} raised dense onClick={onIncrement}>
+            <Button
+                color={"primary"}
+                raised
+                dense
+                onClick={onIncrement}
+                disabled={!canClick}
+            >
                 +
             </Button>
         </CardActions>
@@ -62,38 +70,47 @@ const LessonButtons = observer(
 
         render() {
             const { lesson, onIncrement, onDecrement } = this.props
+            const now = new Date()
+            const canClick =
+                lesson.date.setHours(0, 0, 0, 0) === now.setHours(0, 0, 0, 0) &&
+                now.getUTCHours() > 14 &&
+                now.getUTCHours() < 17
             return (
                 <Grid container justify={"center"} spacing={0}>
                     <Grid item>
                         <LessonCard
                             text="Haaaaa"
-                            value={lesson.haaaaa}
+                            value={lesson.haaaaa || countType(lesson, "haaaaa")}
                             onIncrement={() => onIncrement("haaaaa")}
                             onDecrement={() => onDecrement("haaaaa")}
+                            canClick={canClick}
                         />
                     </Grid>
                     <Grid item>
                         <LessonCard
                             text="Heeeee"
-                            value={lesson.heeeee}
+                            value={lesson.heeeee || countType(lesson, "heeeee")}
                             onIncrement={() => onIncrement("heeeee")}
                             onDecrement={() => onDecrement("heeeee")}
+                            canClick={canClick}
                         />
                     </Grid>
                     <Grid item>
                         <LessonCard
                             text="Hmmmmm"
-                            value={lesson.hmmmmm}
+                            value={lesson.hmmmmm || countType(lesson, "hmmmmm")}
                             onIncrement={() => onIncrement("hmmmmm")}
                             onDecrement={() => onDecrement("hmmmmm")}
+                            canClick={canClick}
                         />
                     </Grid>
                     <Grid item>
                         <LessonCard
                             text="Okay"
-                            value={lesson.okay}
+                            value={lesson.okay || countType(lesson, "okay")}
                             onIncrement={() => onIncrement("okay")}
                             onDecrement={() => onDecrement("okay")}
+                            canClick={canClick}
                         />
                     </Grid>
                 </Grid>

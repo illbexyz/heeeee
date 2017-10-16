@@ -7,8 +7,15 @@ import database from "../config/firebase"
 
 import { dateToLessonId } from "../utils"
 
+const counterDocToCountersArray = counterDoc =>
+    counterDoc.docs.map(doc => ({
+        type: doc.data().type,
+        timestamp: doc.data().timestamp
+    }))
+
 export class FirebaseStore {
     isFetchingLessons: boolean
+    unsubscribe: () => any = () => {}
 
     constructor() {
         extendObservable(this, {
@@ -27,11 +34,28 @@ export class FirebaseStore {
 
     fetchLessonsSuccess = action(
         "fetchLessonsSuccess",
-        (querySnapshot, onSuccess) => {
+        async (snapshot, onSuccess) => {
             this.isFetchingLessons = false
-            const lessons: Lesson[] = []
-            querySnapshot.forEach(doc => lessons.push(doc.data()))
-            onSuccess(lessons)
+            const lessons = snapshot.docs.map(doc => doc.data())
+            const countersDocPromises = lessons.map(lesson =>
+                database
+                    .collection(
+                        `lessons/${dateToLessonId(lesson.date)}/counters`
+                    )
+                    .get()
+            )
+            const countersDocs = await Promise.all(countersDocPromises)
+
+            const counters = countersDocs.map(counterDoc =>
+                counterDocToCountersArray(counterDoc)
+            )
+
+            const lessonsWithCounters = lessons.map((lesson, index) => ({
+                ...lesson,
+                counters: counters[index]
+            }))
+
+            onSuccess(lessonsWithCounters)
         }
     )
 
@@ -42,11 +66,22 @@ export class FirebaseStore {
 
     subscribeForLesson = action(
         "selectLesson",
-        (lessonId: string, subscriber: (doc: any) => any) => {
-            return database
+        async (lessonId: string, subscriber: (doc: any) => any) => {
+            const lessonDoc = await database
                 .collection("lessons")
                 .doc(lessonId)
-                .onSnapshot(subscriber)
+                .get()
+            const lesson = lessonDoc.data()
+            this.unsubscribe()
+            this.unsubscribe = database
+                .collection(`lessons/${lessonId}/counters`)
+                .onSnapshot(snapshot => {
+                    const counters = counterDocToCountersArray(snapshot)
+                    subscriber({
+                        ...lesson,
+                        counters
+                    })
+                })
         }
     )
 
@@ -56,6 +91,13 @@ export class FirebaseStore {
             .doc(dateToLessonId(lesson.date))
             .update(lesson)
     })
+
+    addToCollection = action(
+        "addToCollection",
+        (collectionId: string, data: any) => {
+            database.collection(collectionId).add(data)
+        }
+    )
 }
 
 export default new FirebaseStore()

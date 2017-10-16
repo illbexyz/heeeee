@@ -21,7 +21,7 @@ import type { LessonUpdateType } from "../stores/lessons"
 import { type Lesson } from "../config/firebase"
 import { primary } from "../config/colors"
 
-import { onlyIf } from "../utils"
+import { countType, onlyIf } from "../utils"
 
 import LessonButtons from "./LessonButtons"
 import LessonsDrawer from "./LessonsDrawer"
@@ -53,14 +53,23 @@ class LessonUI extends Component<LessonProps> {
     render() {
         const { lesson, onIncrement, onDecrement } = this.props
 
-        const data =
-            lesson &&
+        const simpleCounters = lesson && {
+            haaaaa: countType(lesson, "haaaaa"),
+            heeeee: countType(lesson, "heeeee"),
+            hmmmmm: countType(lesson, "hmmmmm"),
+            okay: countType(lesson, "okay")
+        }
+
+        const inputSource = lesson && (lesson.haaaaa ? lesson : simpleCounters)
+
+        const countData =
+            inputSource &&
             compact(
-                Object.keys(lesson).map(key => {
-                    if (key !== "date") {
+                Object.keys(inputSource).map(key => {
+                    if (key !== "date" && key !== "counters") {
                         return {
                             name: key,
-                            value: lesson[key]
+                            value: inputSource[key]
                         }
                     } else {
                         return null
@@ -92,7 +101,7 @@ class LessonUI extends Component<LessonProps> {
                                 Grafici
                             </Typography>
                             <ResponsiveContainer width="90%" height={300}>
-                                <BarChart data={data}>
+                                <BarChart data={countData}>
                                     <XAxis dataKey="name" />
                                     <YAxis dataKey="value" />
                                     <Tooltip />

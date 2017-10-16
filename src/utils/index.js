@@ -34,3 +34,7 @@ export const prettyDate = (date: Date) => {
 export function onlyIf<T>(condition: boolean, component: T, placeholer?: T) {
     return condition ? component : placeholer || null
 }
+
+export function countType(lesson: Lesson, type: string) {
+    return lesson.counters.filter(counter => counter.type === type).length
+}

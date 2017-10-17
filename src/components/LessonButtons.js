@@ -71,10 +71,10 @@ const LessonButtons = observer(
         render() {
             const { lesson, onIncrement, onDecrement } = this.props
             const now = new Date()
-            const canClick =
-                lesson.date.setHours(0, 0, 0, 0) === now.setHours(0, 0, 0, 0) &&
-                now.getUTCHours() > 14 &&
-                now.getUTCHours() < 17
+            const canClick = true
+            // lesson.date.setHours(0, 0, 0, 0) === now.setHours(0, 0, 0, 0) &&
+            // now.getUTCHours() > 14 &&
+            // now.getUTCHours() < 17
             return (
                 <Grid container justify={"center"} spacing={0}>
                     <Grid item>

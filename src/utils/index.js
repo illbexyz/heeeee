@@ -38,3 +38,11 @@ export function onlyIf<T>(condition: boolean, component: T, placeholer?: T) {
 export function countType(lesson: Lesson, type: string) {
     return lesson.counters.filter(counter => counter.type === type).length
 }
+
+export function areSameDate(d1: Date, d2: Date) {
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    )
+}

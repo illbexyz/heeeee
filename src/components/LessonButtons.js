@@ -11,7 +11,7 @@ import Grid from "material-ui/Grid"
 import { type UpdateType } from "../stores/firebase"
 import { type Lesson } from "../config/firebase"
 
-import { countType } from "../utils"
+import { areSameDate, countType } from "../utils"
 
 type LessonProps = {
     lesson: Lesson,
@@ -71,10 +71,12 @@ const LessonButtons = observer(
         render() {
             const { lesson, onIncrement, onDecrement } = this.props
             const now = new Date()
-            const canClick = true
-            // lesson.date.setHours(0, 0, 0, 0) === now.setHours(0, 0, 0, 0) &&
-            // now.getUTCHours() > 14 &&
-            // now.getUTCHours() < 17
+            const canClick =
+                areSameDate(lesson.date, now) &&
+                now.getUTCHours() >= 14 &&
+                now.getUTCHours() <= 16
+            console.log(now.getUTCHours())
+            console.log(now.getHours())
             return (
                 <Grid container justify={"center"} spacing={0}>
                     <Grid item>

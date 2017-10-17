@@ -27,6 +27,11 @@ const PageLessons = withRouter(
                     return (
                         <Switch>
                             <Route
+                                exact
+                                path="/lessons"
+                                component={SelectLesson}
+                            />
+                            <Route
                                 path="/lessons/:id"
                                 render={({ match }) => {
                                     lessonsStore.selectLesson(match.params.id)
@@ -41,7 +46,6 @@ const PageLessons = withRouter(
                                     )
                                 }}
                             />
-                            <Route path="/lessons" component={SelectLesson} />
                         </Switch>
                     )
                 }

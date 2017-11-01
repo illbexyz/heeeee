@@ -9,17 +9,21 @@ import { dateToLessonId } from "../utils"
 export type LessonUpdateType = "haaaaa" | "heeeee" | "hmmmmm" | "okay"
 
 export class LessonsStore {
-    lessons: Lesson[]
+    lessonsDB = {}
     currentLesson: Lesson
 
     constructor() {
         extendObservable(this, {
-            lessons: [],
+            lessonsDB: [],
             currentLesson: null
         })
         firebaseStore.fetchLessons(lessons => {
-            this.lessons = lessons
+            this.lessonsDB = lessons
         })
+    }
+
+    get lessons() {
+        return Object.values(this.lessonsDB)
     }
 
     selectLesson = action("selectLesson", (lessonId: string) => {
@@ -27,22 +31,10 @@ export class LessonsStore {
             !this.currentLesson ||
             dateToLessonId(this.currentLesson.date) !== lessonId
         ) {
+            this.currentLesson = this.lessonsDB[lessonId]
             firebaseStore.subscribeForLesson(lessonId, this.onLessonUpdate)
         }
     })
-
-    updateLesson = action(
-        "updateLesson",
-        (type: LessonUpdateType, action: "increment" | "decrement") => {
-            firebaseStore.updateLesson({
-                ...this.currentLesson,
-                [type]:
-                    action === "increment"
-                        ? this.currentLesson[type] + 1
-                        : this.currentLesson[type] - 1
-            })
-        }
-    )
 
     addDataToLesson = action("addDataToLesson", (type: LessonUpdateType) => {
         const item = {
@@ -50,7 +42,7 @@ export class LessonsStore {
             timestamp: new Date()
         }
         firebaseStore.addToCollection(
-            `lessons/${dateToLessonId(this.currentLesson.date)}/counters`,
+            `/counters/${dateToLessonId(this.currentLesson.date)}`,
             item
         )
     })

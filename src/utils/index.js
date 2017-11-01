@@ -1,4 +1,5 @@
 // @flow
+import padStart from "lodash/padStart"
 
 const monthNames = [
     "Gennaio",
@@ -16,17 +17,19 @@ const monthNames = [
 ]
 
 export const dateToLessonId = (date: Date) => {
-    var day = date.getDate()
-    var month = date.getMonth() + 1
-    var year = date.getFullYear()
+    const d = new Date(date)
+    var day = padStart(d.getDate(), 2, "0")
+    var month = padStart(d.getMonth() + 1, 2, "0")
+    var year = d.getFullYear()
 
     return `${year}-${month}-${day}`
 }
 
 export const prettyDate = (date: Date) => {
-    var day = date.getDate()
-    var monthIndex = date.getMonth()
-    var year = date.getFullYear()
+    const d = new Date(date)
+    var day = d.getDate()
+    var monthIndex = d.getMonth()
+    var year = d.getFullYear()
 
     return `${day} ${monthNames[monthIndex]} ${year}`
 }
@@ -36,13 +39,19 @@ export function onlyIf<T>(condition: boolean, component: T, placeholer?: T) {
 }
 
 export function countType(lesson: Lesson, type: string) {
-    return lesson.counters.filter(counter => counter.type === type).length
+    if (!lesson.counters) {
+        return 0
+    } else {
+        return lesson.counters.filter(counter => counter.type === type).length
+    }
 }
 
 export function areSameDate(d1: Date, d2: Date) {
+    const date1 = new Date(d1)
+    const date2 = new Date(d2)
     return (
-        d1.getFullYear() === d2.getFullYear() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getDate() === d2.getDate()
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
     )
 }

@@ -1,7 +1,6 @@
 // @flow
 
 import firebase from "firebase"
-import "firebase/firestore"
 
 const config = {
     apiKey: "AIzaSyC_nxjtutAjPsjy2rFwbrIHVdaeWN0Ce_M",
@@ -28,6 +27,6 @@ export type Lesson = {
     okay?: number
 }
 
-const db = firebase.firestore()
+const db = firebase.database()
 
 export default db

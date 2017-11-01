@@ -57,13 +57,11 @@ const LessonButtons = observer(
         onKeyDown = (event: KeyboardEvent) => {
             const { onIncrement } = this.props
 
-            if (event.key === "a" || event.key === "1") {
-                onIncrement("haaaaa")
-            } else if (event.key === "e" || event.key === "2") {
+            if (event.key === "e" || event.key === "1") {
                 onIncrement("heeeee")
-            } else if (event.key === "m" || event.key === "3") {
+            } else if (event.key === "m" || event.key === "2") {
                 onIncrement("hmmmmm")
-            } else if (event.key === "o" || event.key === "4") {
+            } else if (event.key === "o" || event.key === "3") {
                 onIncrement("okay")
             }
         }
@@ -75,19 +73,9 @@ const LessonButtons = observer(
                 areSameDate(lesson.date, now) &&
                 now.getUTCHours() >= 14 &&
                 now.getUTCHours() <= 16
-            console.log(now.getUTCHours())
-            console.log(now.getHours())
+
             return (
                 <Grid container justify={"center"} spacing={0}>
-                    <Grid item>
-                        <LessonCard
-                            text="Haaaaa"
-                            value={lesson.haaaaa || countType(lesson, "haaaaa")}
-                            onIncrement={() => onIncrement("haaaaa")}
-                            onDecrement={() => onDecrement("haaaaa")}
-                            canClick={canClick}
-                        />
-                    </Grid>
                     <Grid item>
                         <LessonCard
                             text="Heeeee"

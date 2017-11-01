@@ -52,9 +52,8 @@ type LessonProps = {
 class LessonUI extends Component<LessonProps> {
     render() {
         const { lesson, onIncrement, onDecrement } = this.props
-
+        console.log(lesson)
         const simpleCounters = lesson && {
-            haaaaa: countType(lesson, "haaaaa"),
             heeeee: countType(lesson, "heeeee"),
             hmmmmm: countType(lesson, "hmmmmm"),
             okay: countType(lesson, "okay")

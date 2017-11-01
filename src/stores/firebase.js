@@ -2,10 +2,7 @@
 
 import { action, extendObservable } from "mobx"
 
-import type { Lesson } from "../config/firebase"
 import database from "../config/firebase"
-
-import { dateToLessonId } from "../utils"
 
 const counterDocToCountersArray = counterDoc => {
     const counters = counterDoc.val()

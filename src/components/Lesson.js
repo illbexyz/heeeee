@@ -8,9 +8,16 @@ import {
     YAxis,
     Tooltip,
     Bar,
-    ResponsiveContainer
+    ResponsiveContainer,
+    LineChart,
+    Line,
+    Legend
 } from "recharts"
 import compact from "lodash/compact"
+import initial from "lodash/initial"
+import last from "lodash/last"
+import tail from "lodash/tail"
+import moment from "moment"
 
 import Fade from "material-ui/transitions/Fade"
 import Hidden from "material-ui/Hidden"
@@ -49,17 +56,58 @@ type LessonProps = {
     onDecrement: (type: LessonUpdateType) => any
 }
 
+function splitInIntervals(lesson: Lesson) {
+    function reduceIntervals(prev, curr) {
+        const lastPlusFive = moment(last(prev).timestamp).add(5, "minutes")
+        const currMoment = moment(curr.timestamp)
+        if (currMoment.isAfter(lastPlusFive, "minute")) {
+            return [
+                ...prev,
+                {
+                    heeeee: 0,
+                    hmmmmm: 0,
+                    okay: 0,
+                    [curr.type]: 1,
+                    timestamp: curr.timestamp
+                }
+            ]
+        } else {
+            const lastOfPrev = last(prev)
+            return [
+                ...initial(prev),
+                { ...lastOfPrev, [curr.type]: (lastOfPrev[curr.type] || 0) + 1 }
+            ]
+        }
+    }
+    if (lesson && lesson.counters) {
+        const sortedCounters = lesson.counters.sort(
+            (one, two) => new Date(one.timestamp) - new Date(two.timestamp)
+        )
+        return tail(sortedCounters).reduce(reduceIntervals, [
+            {
+                heeeee: 0,
+                hmmmmm: 0,
+                okay: 0,
+                [sortedCounters[0].type]: 1,
+                timestamp: new Date(sortedCounters[0].timestamp)
+            }
+        ])
+    } else {
+        return null
+    }
+}
+
 class LessonUI extends Component<LessonProps> {
     render() {
         const { lesson, onIncrement, onDecrement } = this.props
-        console.log(lesson)
+
         const simpleCounters = lesson && {
             heeeee: countType(lesson, "heeeee"),
             hmmmmm: countType(lesson, "hmmmmm"),
             okay: countType(lesson, "okay")
         }
 
-        const inputSource = lesson && (lesson.haaaaa ? lesson : simpleCounters)
+        const inputSource = lesson && (lesson.heeeee ? lesson : simpleCounters)
 
         const countData =
             inputSource &&
@@ -75,6 +123,15 @@ class LessonUI extends Component<LessonProps> {
                     }
                 })
             )
+
+        const lineData = lesson && splitInIntervals(lesson)
+        const lineData2 =
+            lineData &&
+            lineData.map(obj => ({
+                ...obj,
+                timestamp: moment(obj.timestamp).format("HH:mm")
+            }))
+        console.log(lineData)
 
         return onlyIf(
             lesson,
@@ -106,6 +163,35 @@ class LessonUI extends Component<LessonProps> {
                                     <Tooltip />
                                     <Bar dataKey="value" fill={primary[500]} />
                                 </BarChart>
+                            </ResponsiveContainer>
+                            <ResponsiveContainer width="90%" height={300}>
+                                <LineChart data={lineData2}>
+                                    <XAxis dataKey="timestamp" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend iconType="square" />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="heeeee"
+                                        stroke="#2196F3"
+                                        dot={false}
+                                        strokeWidth={2}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="hmmmmm"
+                                        stroke="#f44336"
+                                        dot={false}
+                                        strokeWidth={2}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="okay"
+                                        stroke="#009688"
+                                        dot={false}
+                                        strokeWidth={2}
+                                    />
+                                </LineChart>
                             </ResponsiveContainer>
                         </div>
                     </Wrapper>

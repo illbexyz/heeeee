@@ -39,7 +39,7 @@ export class LessonsStore {
     addDataToLesson = action("addDataToLesson", (type: LessonUpdateType) => {
         const item = {
             type,
-            timestamp: new Date()
+            timestamp: new Date().toString()
         }
         firebaseStore.addToCollection(
             `/counters/${dateToLessonId(this.currentLesson.date)}`,
